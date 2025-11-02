@@ -1,0 +1,29 @@
+# backend/requirements.txt
+
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+sqlalchemy[asyncio]>=2.0.0
+asyncpg>=0.29.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+
+# Form data parsing (para Stripe webhooks)
+python-multipart>=0.0.6
+
+# Rate limiting
+slowapi>=0.1.9
+
+# Cliente HTTP async (para RAWG API)
+httpx>=0.25.0
+
+# Cliente Redis
+redis>=5.0.0
+
+# Cliente Stripe
+stripe>=7.0.0
+
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+httpx>=0.25.0  # Para testing de FastAPI con TestClient async

@@ -69,3 +69,56 @@ memory_card/
 │ └── Dockerfile
 ├── docker-compose.yml
 └── README.md
+
+---
+
+## 🛠️ Cómo ejecutar el proyecto
+
+### Prerrequisitos
+
+- Docker y Docker Compose (para opción recomendada).
+- Python 3.11 + `pip` (si deseas correr el backend sin Docker).
+- Node.js 20 y `npm` (si deseas correr el frontend sin Docker).
+
+### Opción 1 · Docker Compose (recomendada)
+
+1. Duplicá las variables de entorno si querés personalizarlas:
+   ```bash
+   cp .env.example .env
+   cp frontend/.env.local.example frontend/.env.local
+   ```
+2. Construí y levantá los servicios:
+   ```bash
+   docker compose up --build
+   ```
+3. El frontend queda disponible en `http://localhost:3000` y la API FastAPI en `http://localhost:8000`.
+4. Para detener todo:
+   ```bash
+   docker compose down
+   ```
+
+### Opción 2 · Ejecución local (sin Docker)
+
+1. Levantá PostgreSQL y Redis (podés usar Docker igualmente):
+   ```bash
+   docker compose up postgres redis
+   ```
+2. Backend (FastAPI):
+   ```bash
+   cd backend
+   cp ../.env.example .env  # Ajustá valores si es necesario
+   python -m venv .venv
+   source .venv/bin/activate
+   pip install -r requirements.txt
+   uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+   ```
+3. Frontend (Next.js):
+   ```bash
+   cd frontend
+   cp .env.local.example .env.local  # NEXT_PUBLIC_API_URL debe apuntar al backend
+   npm install
+   npm run dev
+   ```
+4. Abrí `http://localhost:3000` para usar la aplicación. La API seguirá en `http://localhost:8000`.
+
+> Tip: Ejecutá los servidores en terminales separadas o usá un process manager (p. ej. `npm run dev` + `uvicorn`) según tu preferencia.

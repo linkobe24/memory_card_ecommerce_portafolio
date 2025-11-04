@@ -35,6 +35,24 @@ services:
       timeout: 5s
       retries: 5
 
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: memorycard_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@memorycard.com
+      PGADMIN_DEFAULT_PASSWORD: admin1234
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - memorycard_network
+
   backend:
     build:
       context: ./backend
@@ -46,6 +64,7 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://postgres:postgres123@postgres:5432/memorycard
       REDIS_URL: redis://redis:6379/0
+      PYTHONPATH: /app
     volumes:
       - ./backend:/app
     depends_on:
@@ -89,3 +108,4 @@ networks:
 volumes:
   postgres_data:
   redis_data:
+  pgadmin_data:

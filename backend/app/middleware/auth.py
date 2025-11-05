@@ -1,31 +1,31 @@
 from typing import Annotated
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import OAuth2PasswordBearer
 from app.core.dependencies import UserRepoDep
 from app.core.security import verify_token
 from app.models.user import User
 
 
-security = HTTPBearer()
+security = OAuth2PasswordBearer(tokenUrl="/api/auth/token")
 
 
 async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    token: str = Depends(security),
     user_repo: UserRepoDep = None,
 ) -> User:
     """
     Dependency de FastAPI que verifica JWT y devuelve usuario actual.
 
     Flujo:
-    1. Extrae token del header Authorization
+    1. OAuth2PasswordBearer extrae token del header Authorization automáticamente
     2. Verifica firma y expiración del JWT
     3. Extrae email del payload
     4. Busca usuario en base de datos
     5. Devuelve usuario o error 401
 
     Args:
-        credentials: Extraído automáticamente del header Authorization
-        db: Session de base de datos
+        token: Extraído automáticamente del header Authorization (sin prefijo "Bearer ")
+        user_repo: Repositorio de usuarios (inyectado por FastAPI)
 
     Returns:
         Usuario autenticado
@@ -33,8 +33,6 @@ async def get_current_user(
     Raises:
         HTTPException 401: Si token es inválido, expirado, o usuario no existe
     """
-    token = credentials.credentials
-
     payload = verify_token(token)
     if payload is None:
         # Firma o expiracion invalida -> respuesta 401

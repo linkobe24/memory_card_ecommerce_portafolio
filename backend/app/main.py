@@ -23,6 +23,10 @@ app = FastAPI(
     redoc_url="/redoc",
     debug=settings.DEBUG,
     lifespan=lifespan,
+    swagger_ui_init_oauth={
+        "usePkceWithAuthorizationCodeGrant": False,  # No usamos PKCE (solo password grant)
+        "useBasicAuthenticationWithAccessCodeGrant": False,  # No usamos Basic Auth
+    },
 )
 
 app.add_middleware(

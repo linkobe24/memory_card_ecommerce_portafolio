@@ -59,6 +59,30 @@ class Settings(BaseSettings):
         default=True, description="Modo debug (desactivar en producción)"
     )
 
+    # RAWG API Settings
+    RAWG_API_KEY: str = Field(
+        default="",
+        description="API key de RAWG (obtener en https://rawg.io/apidocs)",
+    )
+    RAWG_BASE_URL: str = Field(
+        default="https://api.rawg.io/api",
+        description="URL base de RAWG API",
+    )
+    RAWG_REQUEST_TIMEOUT: int = Field(
+        default=10,
+        description="Timeout en segundos para requests a RAWG",
+    )
+    RAWG_MAX_RETRIES: int = Field(
+        default=3,
+        description="Máximo número de reintentos en caso de error",
+    )
+
+    # Cache Settings
+    CACHE_DEFAULT_TTL: int = Field(
+        default=86400,  # 24 horas
+        description="TTL por defecto para cache en segundos",
+    )
+
     class Config:
         """
         Configuración de Pydantic Settings.

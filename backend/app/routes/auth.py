@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Request, status
+from fastapi import APIRouter, Request, status, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
@@ -78,6 +79,50 @@ async def login(
     """
     token_response = await auth_service.login_user(
         email=login_data.email, password=login_data.password
+    )
+    return token_response
+
+
+@router.post("/token", response_model=TokenResponse)
+@limiter.limit("5/minute")
+async def token(
+    request: Request,
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    auth_service: AuthServiceDep = None,
+):
+    """
+    Endpoint OAuth2 compatible con Swagger UI.
+
+    ⚠️ Este endpoint es SOLO para Swagger. El frontend debe usar /login.
+
+    Diferencias con /login:
+    - /login: Acepta JSON body con {"email": "...", "password": "..."}
+    - /token: Acepta form-data con username=email y password
+
+    Ambos endpoints usan la misma lógica de AuthService.login_user().
+
+    Flujo:
+    1. Swagger envía form-data (application/x-www-form-urlencoded)
+    2. FastAPI parsea con OAuth2PasswordRequestForm
+    3. Usamos form_data.username como email (estándar OAuth2)
+    4. Delegamos a AuthService (misma lógica que /login)
+    5. Swagger guarda access_token automáticamente
+
+    Rate limit: 5 requests/minuto por IP
+
+    Args:
+        request: Request de FastAPI (usado por rate limiter)
+        form_data: Formulario OAuth2 con username (email) y password
+        auth_service: Servicio de autenticación (inyectado por FastAPI)
+
+    Returns:
+        TokenResponse con access_token y refresh_token
+
+    Raises:
+        HTTPException 401: Si credenciales son incorrectas
+    """
+    token_response = await auth_service.login_user(
+        email=form_data.username, password=form_data.password
     )
     return token_response
 

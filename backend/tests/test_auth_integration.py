@@ -4,102 +4,12 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 import pytest
-from uuid import uuid4
-from datetime import datetime, timezone
 
 from httpx import AsyncClient, ASGITransport
 
 from app.main import app
-from app.core.dependencies import get_user_repository, get_auth_service
-from app.services.auth_service import AuthService
-from app.crud.user_interface import UserRepositoryInterface
-from app.schemas.user import UserCreate, UserUpdate
-from app.models.user import User, UserRole
-from app.core.security import hash_password
-from app.routes.auth import limiter
 
-
-def unique_email(label: str) -> str:
-    return f"{label}-{uuid4().hex}@example.com"
-
-
-class InMemoryUserRepository(UserRepositoryInterface):
-    def __init__(self):
-        self._users: dict[str, User] = {}
-        self._by_id: dict[int, User] = {}
-        self._id_sequence = 1
-
-    async def get_by_email(self, email: str) -> User | None:
-        return self._users.get(email)
-
-    async def get_by_id(self, id: int) -> User | None:
-        return self._by_id.get(id)
-
-    async def create_user(self, user_data: UserCreate) -> User:
-        if user_data.email in self._users:
-            raise ValueError("duplicate-email")
-
-        user = User(
-            id=self._id_sequence,
-            email=user_data.email,
-            hashed_password=hash_password(user_data.password),
-            full_name=user_data.full_name,
-            role=UserRole.CUSTOMER,
-            created_at=datetime.now(timezone.utc),
-        )
-        self._users[user.email] = user
-        self._by_id[user.id] = user
-        self._id_sequence += 1
-        return user
-
-    async def create(self, data: UserCreate) -> User:
-        return await self.create_user(data)
-
-    async def update(self, id: int, data: UserUpdate) -> User | None:
-        user = await self.get_by_id(id)
-        if user is None:
-            return None
-        payload = data.model_dump(exclude_unset=True)
-        if "email" in payload:
-            self._users.pop(user.email, None)
-            user.email = payload["email"]
-            self._users[user.email] = user
-        if "full_name" in payload:
-            user.full_name = payload["full_name"]
-        if "password" in payload:
-            user.hashed_password = payload["password"]
-        return user
-
-    async def delete(self, id: int) -> bool:
-        user = await self.get_by_id(id)
-        if not user:
-            return False
-        self._by_id.pop(id, None)
-        self._users.pop(user.email, None)
-        return True
-
-    async def update_last_login(self, user_id: int) -> None:
-        # No-op for in-memory repo
-        return None
-
-
-@pytest.fixture(autouse=True)
-def override_dependencies():
-    repo = InMemoryUserRepository()
-
-    def _user_repo_override() -> UserRepositoryInterface:
-        return repo
-
-    def _auth_service_override() -> AuthService:
-        return AuthService(user_repository=repo)
-
-    app.dependency_overrides[get_user_repository] = _user_repo_override
-    app.dependency_overrides[get_auth_service] = _auth_service_override
-    previous_enabled = getattr(limiter, "enabled", True)
-    limiter.enabled = False
-    yield
-    app.dependency_overrides.clear()
-    limiter.enabled = previous_enabled
+from tests.fakes import generate_unique_email as unique_email
 
 
 @pytest.mark.asyncio

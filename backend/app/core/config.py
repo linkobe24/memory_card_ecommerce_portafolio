@@ -8,7 +8,7 @@ Pydantic Settings permite:
 - Documentación centralizada
 """
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 
 
@@ -83,16 +83,10 @@ class Settings(BaseSettings):
         description="TTL por defecto para cache en segundos",
     )
 
-    class Config:
-        """
-        Configuración de Pydantic Settings.
-
-        env_file: Archivo .env a leer
-        case_sensitive: Si las variables de entorno distinguen mayúsculas/minúsculas
-        """
-
-        env_file = ".env"
-        case_sensitive = False
+    model_config = SettingsConfigDict(
+        env_file=".env",  # Archivo .env a leer
+        case_sensitive=False,
+    )
 
 
 settings = Settings()

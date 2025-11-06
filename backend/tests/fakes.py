@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from uuid import uuid4
 
 from app.crud.user_interface import UserRepositoryInterface
+from app.crud.cache_interface import CacheRepositoryInterface
 from app.models.user import User, UserRole
 from app.schemas.user import UserCreate, UserUpdate
 from app.core.security import hash_password
@@ -84,3 +85,51 @@ class InMemoryUserRepository(UserRepositoryInterface):
         user = await self.get_by_id(user_id)
         if user is not None:
             user.last_login = datetime.now(timezone.utc)
+
+
+class InMemoryCacheRepository(CacheRepositoryInterface):
+    """
+    Repositorio de cache en memoria para tests.
+
+    Simula Redis sin necesidad de servidor real.
+    """
+
+    def __init__(self):
+        self._cache: dict[str, str] = {}
+        # En un caso real, TTL se implementaría con timestamps
+        # Para tests, lo simplificamos (ignoramos TTL)
+
+    async def get(self, key: str) -> str | None:
+        """Obtiene valor del cache."""
+        return self._cache.get(key)
+
+    async def set(self, key: str, value: str, ttl: int | None = None) -> None:
+        """Guarda valor en cache (ignora TTL en tests)."""
+        self._cache[key] = value
+
+    async def delete(self, key: str) -> None:
+        """Elimina clave del cache."""
+        self._cache.pop(key, None)
+
+    async def exists(self, key: str) -> bool:
+        """Verifica si clave existe."""
+        return key in self._cache
+
+    async def clear_pattern(self, pattern: str) -> int:
+        """
+        Elimina claves por patrón (simulación simple).
+
+        Convierte patrón Redis (rawg:*) a Python (rawg:).
+        """
+        # Convertir patrón Redis a prefijo Python
+        prefix = pattern.replace("*", "")
+        keys_to_delete = [k for k in self._cache.keys() if k.startswith(prefix)]
+
+        for key in keys_to_delete:
+            del self._cache[key]
+
+        return len(keys_to_delete)
+
+    def clear_all(self):
+        """Método helper para limpiar todo el cache en tests."""
+        self._cache.clear()

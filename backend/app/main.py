@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from app.routes import auth
+from app.routes import auth, catalog
 from app.core.init_db import init_db
 from app.core.config import settings
 
@@ -10,6 +10,7 @@ from app.core.config import settings
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
+
     print("✅ Base de datos inicializada")
     yield
     print("Apagando")
@@ -38,6 +39,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
+app.include_router(catalog.router, prefix="/api/catalog", tags=["Catalog"])
 
 
 @app.get("/")

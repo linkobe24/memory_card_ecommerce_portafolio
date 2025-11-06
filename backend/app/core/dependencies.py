@@ -1,10 +1,16 @@
 from typing import Annotated
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.core.database import get_db
 from app.crud.user_interface import UserRepositoryInterface
 from app.crud.user_repository import PostgresUserRepository
+from app.crud.cache_respository import RedisCacheRepository
+from app.crud.cache_interface import CacheRepositoryInterface
 from app.services.auth_service import AuthService
+from app.services.cache_service import CacheService
+from app.services.calatog_service import CatalogService
+from app.clients.rawg.rawg_client import get_rawg_client, RAWGClient
 
 
 def get_user_repository(db: AsyncSession = Depends(get_db)) -> UserRepositoryInterface:
@@ -41,6 +47,19 @@ def get_user_repository(db: AsyncSession = Depends(get_db)) -> UserRepositoryInt
 UserRepoDep = Annotated[UserRepositoryInterface, Depends(get_user_repository)]
 
 
+def get_cache_repository() -> CacheRepositoryInterface:
+    """
+    Factory para repositorio de cache (Redis).
+
+    Returns:
+        Instancia de RedisCacheRepository
+    """
+    return RedisCacheRepository()
+
+
+CacheRepoDep = Annotated[CacheRepositoryInterface, Depends(get_cache_repository)]
+
+
 def get_auth_service(user_repo: UserRepoDep) -> AuthService:
     """
     Factory para inyectar AuthService.
@@ -51,3 +70,47 @@ def get_auth_service(user_repo: UserRepoDep) -> AuthService:
 
 
 AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]
+
+
+def get_cache_service(cache_repo: CacheRepoDep) -> CacheService:
+    """
+    Factory para inyectar CacheService.
+
+    Args:
+        cache_repo: Repositorio de cache (inyectado por FastAPI)
+
+    Returns:
+        Instancia de CacheService
+    """
+    return CacheService(cache_repo=cache_repo)
+
+
+CacheServiceDep = Annotated[CacheService, Depends(get_cache_service)]
+
+
+def get_rawg_client_dep() -> RAWGClient:
+    """
+    Factory para cliente RAWG.
+
+    Returns:
+        Singleton de RAWGClient
+    """
+    return get_rawg_client()
+
+
+RAWGClientDep = Annotated[RAWGClient, Depends(get_rawg_client_dep)]
+
+
+def get_catalog_service(
+    rawg_client: RAWGClientDep, cache_service: CacheServiceDep
+) -> CatalogService:
+    """
+    Factory para inyectar CatalogService.
+
+    El servicio depende de RAWG client y cache service,
+    FastAPI los inyecta automáticamente.
+    """
+    return CatalogService(rawg_client, cache_service)
+
+
+CatalogServiceDep = Annotated[CatalogService, Depends(get_catalog_service)]

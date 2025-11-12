@@ -21,27 +21,10 @@ async def register(
     user_data: UserCreate, request: Request, auth_service: AuthServiceDep
 ):
     """
-    Registra un nuevo usuario.
+    Registra un usuario y devuelve el par de tokens inicial; limitado a 5 req/min IP.
 
-    Flujo:
-    1. FastAPI valida user_data con Pydantic (automático)
-    2. Route delega al service
-    3. Service maneja validaciones de negocio + creación
-    4. Route devuelve tokens
-
-    Rate limit: 5 requests/minuto por IP
-
-    Args:
-        user_data: Schema con email, password, full_name
-        request: Request de FastAPI (usado por rate limiter)
-        auth_service: Servicio de autenticación (inyectado por FastAPI)
-
-    Returns:
-        TokenResponse con access_token y refresh_token
-
-    Raises:
-        HTTPException 400: Si email ya está registrado (levantado por service)
-        HTTPException 422: Si password no es válido (levantado por service)
+    Valida datos con Pydantic, delega las verificaciones de negocio al servicio y
+    retorna inmediatamente los tokens para que el cliente quede autenticado.
     """
     user = await auth_service.register_user(user_data)
 
@@ -56,26 +39,9 @@ async def login(
     login_data: LoginRequest, request: Request, auth_service: AuthServiceDep
 ):
     """
-    Autentica un usuario y devuelve tokens.
+    Autentica credenciales y emite un nuevo par access/refresh token (5 req/min IP).
 
-    Flujo:
-    1. FastAPI valida login_data con Pydantic (automático)
-    2. Route delega al service
-    3. Service maneja validaciones + generación de tokens
-    4. Route devuelve tokens
-
-    Rate limit: 5 requests/minuto por IP
-
-    Args:
-        login_data: Schema con email y password
-        request: Request de FastAPI (usado por rate limiter)
-        auth_service: Servicio de autenticación (inyectado por FastAPI)
-
-    Returns:
-        TokenResponse con access_token y refresh_token
-
-    Raises:
-        HTTPException 401: Si credenciales son incorrectas (levantado por service)
+    Levanta HTTP 401 cuando el servicio detecta credenciales inválidas.
     """
     token_response = await auth_service.login_user(
         email=login_data.email, password=login_data.password
@@ -91,35 +57,10 @@ async def token(
     auth_service: AuthServiceDep = None,
 ):
     """
-    Endpoint OAuth2 compatible con Swagger UI.
+    Variante OAuth2 password grant pensada para Swagger UI (5 req/min IP).
 
-    ⚠️ Este endpoint es SOLO para Swagger. El frontend debe usar /login.
-
-    Diferencias con /login:
-    - /login: Acepta JSON body con {"email": "...", "password": "..."}
-    - /token: Acepta form-data con username=email y password
-
-    Ambos endpoints usan la misma lógica de AuthService.login_user().
-
-    Flujo:
-    1. Swagger envía form-data (application/x-www-form-urlencoded)
-    2. FastAPI parsea con OAuth2PasswordRequestForm
-    3. Usamos form_data.username como email (estándar OAuth2)
-    4. Delegamos a AuthService (misma lógica que /login)
-    5. Swagger guarda access_token automáticamente
-
-    Rate limit: 5 requests/minuto por IP
-
-    Args:
-        request: Request de FastAPI (usado por rate limiter)
-        form_data: Formulario OAuth2 con username (email) y password
-        auth_service: Servicio de autenticación (inyectado por FastAPI)
-
-    Returns:
-        TokenResponse con access_token y refresh_token
-
-    Raises:
-        HTTPException 401: Si credenciales son incorrectas
+    Acepta form-data `username/password`, reutiliza la lógica de `/login` y debe
+    evitarse desde el frontend en producción.
     """
     token_response = await auth_service.login_user(
         email=form_data.username, password=form_data.password
@@ -130,23 +71,9 @@ async def token(
 @router.post("/refresh", response_model=TokenResponse)
 async def refresh(refresh_data: RefreshRequest, auth_service: AuthServiceDep):
     """
-    Renueva access token usando refresh token.
+    Intercambia un refresh_token válido por un nuevo access_token.
 
-    Flujo:
-    1. FastAPI valida refresh_data con Pydantic (automático)
-    2. Route delega al service
-    3. Service verifica refresh token + genera nuevo access token
-    4. Route devuelve tokens
-
-    Args:
-        refresh_data: Schema con refresh_token
-        auth_service: Servicio de autenticación (inyectado por FastAPI)
-
-    Returns:
-        TokenResponse con nuevo access_token y mismo refresh_token
-
-    Raises:
-        HTTPException 401: Si refresh token es inválido (levantado por service)
+    Preserva el refresh original y retorna HTTP 401 si el token fue revocado o expiró.
     """
     token_response = await auth_service.refresh_access_token(refresh_data.refresh_token)
     return token_response
@@ -155,22 +82,8 @@ async def refresh(refresh_data: RefreshRequest, auth_service: AuthServiceDep):
 @router.get("/me", response_model=UserResponse)
 async def get_me(current_user: CurrentUser, auth_service: AuthServiceDep):
     """
-    Devuelve información del usuario autenticado.
+    Devuelve el perfil público del usuario asociado al JWT enviado en Authorization.
 
-    Endpoint protegido: Requiere JWT válido en header Authorization.
-
-    El middleware get_current_user extrae y verifica el JWT automáticamente.
-
-    Flujo:
-    1. Middleware verifica JWT y extrae email
-    2. Middleware busca usuario y lo inyecta en `current_user`
-    3. Route devuelve información del usuario
-
-    Args:
-        current_user: Usuario autenticado (inyectado por middleware)
-        auth_service: Servicio de autenticación (inyectado, no usado aquí)
-
-    Returns:
-        UserResponse con información del usuario (sin password)
+    El middleware ya validó el token y cargó el modelo como `current_user`.
     """
     return current_user

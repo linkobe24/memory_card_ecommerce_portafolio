@@ -10,6 +10,7 @@ pydantic[email]
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
 bcrypt==3.2.2  # Passlib 1.7.4 no maneja los cambios de bcrypt >=4 (ValueError 72 bytes)
+alembic
 
 # Form data parsing (para Stripe webhooks)
 python-multipart>=0.0.6

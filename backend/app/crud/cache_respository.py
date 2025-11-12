@@ -50,7 +50,7 @@ class RedisCacheRepository(CacheRepositoryInterface):
     async def exists(self, key: str) -> bool:
         """Verifica si clave existe."""
         client = await self._get_client()
-        return await client.exists(key) > 0
+        return (await client.exists(key)) > 0
     
     async def clear_pattern(self, pattern: str) -> int:
         """

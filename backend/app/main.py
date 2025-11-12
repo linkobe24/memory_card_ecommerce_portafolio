@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from app.routes import auth, catalog
+from app.routes import auth, catalog, game_catalog, cart, order, review
 from app.core.init_db import init_db
 from app.core.config import settings
 
@@ -40,6 +40,10 @@ app.add_middleware(
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
 app.include_router(catalog.router, prefix="/api/catalog", tags=["Catalog"])
+app.include_router(game_catalog.router, prefix="/api/products", tags=["Products"])
+app.include_router(cart.router, prefix="/api/cart", tags=["Cart"])
+app.include_router(order.router, prefix="/api/orders", tags=["Orders"])
+app.include_router(review.router, prefix="/api/reviews", tags=["Reviews"])
 
 
 @app.get("/")

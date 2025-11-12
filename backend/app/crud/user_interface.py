@@ -5,18 +5,6 @@ from app.schemas.user import UserCreate
 
 
 class UserRepositoryInterface(BaseRepository[User]):
-    """
-    Interfaz (contrato) para repositorios de usuarios.
-
-    Cualquier clase que implemente esta interfaz debe proporcionar implementaciones
-    concretas de todos los métodos abstractos.
-
-    Ejemplo de uso:
-        class PostgresUserRepository(UserRepositoryInterface):
-            async def get_by_email(self, email: str) -> User | None:
-                # Implementación específica de PostgreSQL
-                ...
-    """
 
     @abstractmethod
     async def get_by_email(self, email: str) -> User | None:

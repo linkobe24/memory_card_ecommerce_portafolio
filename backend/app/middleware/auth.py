@@ -63,3 +63,30 @@ async def get_current_user(
 
 
 CurrentUser = Annotated[User, Depends(get_current_user)]
+
+
+async def get_current_admin(current_user: CurrentUser) -> User:
+    """
+    Dependency que verifica que el usuario actual sea administrador.
+
+    Usa get_current_user para obtener el usuario autenticado,
+    luego verifica que tenga rol de admin.
+
+    Args:
+        current_user: Usuario autenticado (inyectado por CurrentUser)
+
+    Returns:
+        Usuario autenticado con rol admin
+
+    Raises:
+        HTTPException 403: Si el usuario no es administrador
+    """
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permisos de administrador"
+        )
+    return current_user
+
+
+CurrentAdmin = Annotated[User, Depends(get_current_admin)]

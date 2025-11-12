@@ -1,5 +1,5 @@
 from sqlalchemy import String, DateTime, Enum, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 from datetime import datetime
 import enum
@@ -40,5 +40,25 @@ class User(Base):
         DateTime(timezone=True), nullable=True
     )
 
+    cart: Mapped["Cart"] = relationship(
+        "Cart",
+        back_populates="user",
+        uselist=False,  # Relación uno-a-uno
+        cascade="all, delete-orphan",
+    )
+
+    orders: Mapped[list["Order"]] = relationship(
+        "Order", back_populates="user", cascade="all, delete-orphan"
+    )
+
+    reviews: Mapped[list["Review"]] = relationship(
+        "Review", back_populates="user", cascade="all, delete-orphan"
+    )
+
     def __repr__(self):
         return f"<User(id={self.id}, email={self.email}, role={self.role})>"
+
+    @property
+    def is_admin(self) -> bool:
+        """Convenience boolean to check admin role (mirrors usage in dependencies)."""
+        return self.role == UserRole.ADMIN

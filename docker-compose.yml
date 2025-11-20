@@ -2,7 +2,7 @@ services:
   postgres:
     image: postgres:15-alpine
     container_name: memorycard_postgres
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres123
@@ -22,7 +22,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: memorycard_redis
-    restart: always
+    restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
@@ -38,7 +38,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4:8
     container_name: memorycard_pgadmin
-    restart: always
+    restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@memorycard.com
       PGADMIN_DEFAULT_PASSWORD: admin1234
@@ -58,7 +58,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: memorycard_backend
-    restart: always
+    restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
@@ -86,7 +86,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: memorycard_frontend
-    restart: always
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:

@@ -1,7 +1,11 @@
-export default function HomePage() {
+import { ThemeToggle } from "@/components/ThemeToggle";
+
+export default function Home() {
   return (
-    <div className="flex items-center justify-center h-screen">
-      <h1 className="text-4xl font-bold">MemoryCard E-Commerce</h1>
-    </div>
+    <main className="flex min-h-screen flex-col items-center justify-center p-24">
+      <h1 className="text-4xl font-bold text-primary-600">
+        MemoryCard E-Commerce
+      </h1>
+    </main>
   );
 }

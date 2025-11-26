@@ -1,20 +1,29 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import { AppProviders } from "@/providers/AppProviders";
+import { ReactNode } from "react";
+import { Header } from "@/components/layout/Header";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MemoryCard E-Commerce",
-  description: "Frontend de la tienda MemoryCard construida con Next.js",
+  title: "MemoryCard - Tienda de Videojuegos",
+  description: "E-commerce de videojuegos con catálogo completo de RAWG API",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+interface RootLayoutProps {
+  children: ReactNode;
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="es">
-      <body className="min-h-screen bg-slate-950 text-slate-100 antialiased">
-        {children}
+    <html lang="es" suppressHydrationWarning>
+      <body className={inter.className}>
+        <AppProviders>
+          <Header />
+          {children}
+        </AppProviders>
       </body>
     </html>
   );

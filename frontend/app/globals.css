@@ -17,7 +17,8 @@
   --color-primary-950: oklch(0.21 0.07 262.29);
 
   /* Breakpoints personalizados */
-  --breakpoint-3xl: 120rem;
+  --breakpoint-xs: 30rem; /* 480px - Móviles pequeños */
+  --breakpoint-3xl: 120rem; /* 1920px - Pantallas ultra anchas */
 
   /* Fuentes personalizadas */
   --font-display: "Satoshi", "sans-serif";

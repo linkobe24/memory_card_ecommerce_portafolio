@@ -1,6 +1,15 @@
 import { TokenResponse, RefreshTokenRequest } from "@/types/user.types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const DEFAULT_API_URL = "http://localhost:8000";
+const PUBLIC_API_URL =
+  process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL;
+
+function getApiBaseUrl() {
+  if (typeof window === "undefined") {
+    return process.env.API_INTERNAL_URL || PUBLIC_API_URL || DEFAULT_API_URL;
+  }
+  return PUBLIC_API_URL || DEFAULT_API_URL;
+}
 
 export class APIError extends Error {
   constructor(
@@ -42,7 +51,7 @@ async function refreshAccessToken(): Promise<string | null> {
   if (!refreshToken) return null;
 
   try {
-    const response = await fetch(`${API_URL}/api/auth/refresh`, {
+    const response = await fetch(`${getApiBaseUrl()}/api/auth/refresh`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -68,7 +77,7 @@ async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const url = `${API_URL}${endpoint}`;
+  const url = `${getApiBaseUrl()}${endpoint}`;
   const accessToken = getAccessToken();
 
   // Request interceptor: normaliza headers y agrega JSON + bearer token

@@ -61,7 +61,7 @@ export function AuthProvider({ children }: AuthProviderProp) {
   const value = {
     user,
     setUser,
-    isAuthenticated: !user,
+    isAuthenticated: !!user,
     isAdmin: user?.role === "admin",
     logout,
   };

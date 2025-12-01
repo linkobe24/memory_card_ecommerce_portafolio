@@ -14,6 +14,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -27,7 +28,7 @@ export function Header() {
         </Link>
 
         {isDesktop ? (
-          <nav className="flex gap-6">
+          <nav className="flex items-center gap-6">
             <Link href="/catalog" className="hover:text-primary">
               Catálogo
             </Link>
@@ -37,6 +38,7 @@ export function Header() {
             <Link href="/login" className="hover:text-primary">
               Login
             </Link>
+            <ThemeToggle />
           </nav>
         ) : (
           // movil hamburger menu
@@ -70,6 +72,10 @@ export function Header() {
                     Login
                   </Link>
                 </SheetClose>
+                <div className="flex items-center gap-2 pt-4 border-t">
+                  <span className="text-sm text-muted-foreground">Tema:</span>
+                  <ThemeToggle />
+                </div>
               </nav>
             </SheetContent>
           </Sheet>

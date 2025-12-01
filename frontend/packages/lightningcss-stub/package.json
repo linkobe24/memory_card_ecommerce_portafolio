@@ -1,0 +1,10 @@
+{
+  "name": "lightningcss",
+  "version": "1.30.2-stub",
+  "description": "Lightweight stub for lightningcss to unblock builds without native bindings",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./node": "./node/index.js"
+  }
+}

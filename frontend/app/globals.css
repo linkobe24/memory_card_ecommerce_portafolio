@@ -1,198 +1,292 @@
+/* app/globals.css */
 @import "tailwindcss";
-@import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* ============================================
+   GAMING DESIGN SYSTEM - Tailwind v4
+   Basado en análisis de Instant Gaming
+   Ver: docs/ui-design-master.md
+   ============================================ */
 
 @theme {
-  --color-primary-50: oklch(0.97 0.01 262.29);
-  --color-primary-100: oklch(0.95 0.02 262.29);
-  --color-primary-200: oklch(0.9 0.04 262.29);
-  --color-primary-300: oklch(0.83 0.08 262.29);
-  --color-primary-400: oklch(0.73 0.15 262.29);
-  --color-primary-500: oklch(0.65 0.2 262.29);
-  --color-primary-600: oklch(0.55 0.22 262.29);
-  --color-primary-700: oklch(0.47 0.2 262.29);
-  --color-primary-800: oklch(0.39 0.16 262.29);
-  --color-primary-900: oklch(0.33 0.12 262.29);
-  --color-primary-950: oklch(0.21 0.07 262.29);
+  /* ========== COLOR PALETTE ========== */
 
-  /* Breakpoints personalizados */
-  --breakpoint-xs: 30rem; /* 480px - Móviles pequeños */
-  --breakpoint-3xl: 120rem; /* 1920px - Pantallas ultra anchas */
+  /* Primary - Green Gaming (inspirado en Instant Gaming #82DF4D) */
+  --color-primary-50: oklch(0.97 0.02 142);
+  --color-primary-100: oklch(0.94 0.04 142);
+  --color-primary-200: oklch(0.88 0.08 142);
+  --color-primary-300: oklch(0.82 0.12 142);
+  --color-primary-400: oklch(0.76 0.16 142);
+  --color-primary-500: oklch(0.7 0.2 142); /* Base: #82DF4D */
+  --color-primary-600: oklch(0.64 0.18 142);
+  --color-primary-700: oklch(0.54 0.16 142);
+  --color-primary-800: oklch(0.44 0.12 142);
+  --color-primary-900: oklch(0.34 0.08 142);
+  --color-primary-950: oklch(0.24 0.04 142);
 
-  /* Fuentes personalizadas */
-  --font-display: "Satoshi", "sans-serif";
+  /* Accent - Blue Gaming (inspirado en Instant Gaming #489BCA) */
+  --color-accent-50: oklch(0.95 0.02 230);
+  --color-accent-100: oklch(0.9 0.04 230);
+  --color-accent-200: oklch(0.82 0.08 230);
+  --color-accent-300: oklch(0.74 0.12 230);
+  --color-accent-400: oklch(0.66 0.16 230);
+  --color-accent-500: oklch(0.6 0.18 230); /* Base: #489BCA */
+  --color-accent-600: oklch(0.54 0.16 230);
+  --color-accent-700: oklch(0.46 0.14 230);
+  --color-accent-800: oklch(0.38 0.1 230);
+  --color-accent-900: oklch(0.3 0.06 230);
+  --color-accent-950: oklch(0.22 0.04 230);
+
+  /* Neutral - Dark Grays (inspirado en Instant Gaming) */
+  --color-neutral-50: oklch(0.98 0 0);
+  --color-neutral-100: oklch(0.95 0 0);
+  --color-neutral-200: oklch(0.9 0 0);
+  --color-neutral-300: oklch(0.8 0 0);
+  --color-neutral-400: oklch(0.65 0 0);
+  --color-neutral-500: oklch(0.5 0 0);
+  --color-neutral-600: oklch(0.4 0 0); /* #303342 - Text Primary */
+  --color-neutral-700: oklch(0.3 0 0); /* #393E50 - Button Secondary */
+  --color-neutral-800: oklch(0.2 0 0);
+  --color-neutral-900: oklch(0.15 0 0); /* #23252E - Background */
+  --color-neutral-950: oklch(0.1 0 0);
+
+  /* Success, Warning, Error */
+  --color-success: oklch(0.65 0.18 145);
+  --color-warning: oklch(0.75 0.15 85);
+  --color-error: oklch(0.6 0.22 25);
+
+  /* ========== SPACING ========== */
+
+  /* Gaming-optimized spacing scale (base unit: 10px) */
+  --spacing-1: 0.25rem; /* 4px */
+  --spacing-2: 0.5rem; /* 8px */
+  --spacing-3: 0.625rem; /* 10px - Base unit de Instant Gaming */
+  --spacing-4: 1rem; /* 16px */
+  --spacing-5: 1.25rem; /* 20px */
+  --spacing-6: 1.5rem; /* 24px */
+  --spacing-8: 2rem; /* 32px */
+  --spacing-10: 2.5rem; /* 40px */
+  --spacing-12: 3rem; /* 48px */
+  --spacing-16: 4rem; /* 64px */
+
+  /* ========== TYPOGRAPHY ========== */
+
+  /* Font Families (Barlow de Instant Gaming) */
+  --font-heading: "Barlow", "Arial", "system-ui", sans-serif;
+  --font-body: "Barlow", "Arial", "system-ui", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  /* Font Sizes - Basado en Instant Gaming (15px base) */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 0.9375rem; /* 15px - Base de Instant Gaming */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.375rem; /* 22px */
+  --font-size-2xl: 1.875rem; /* 30px */
+  --font-size-3xl: 2.25rem; /* 36px */
+  --font-size-4xl: 3rem; /* 48px */
+
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* ========== BREAKPOINTS ========== */
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* ========== BORDER RADIUS ========== */
+
+  --radius-sm: 0.3125rem; /* 5px */
+  --radius-base: 0.4375rem; /* 7px - Estándar de Instant Gaming */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+  --radius-xl: 1rem; /* 16px */
+  --radius-full: 9999px; /* Círculos */
+
+  /* ========== SHADOWS ========== */
+
+  /* Gaming-style shadows (sutiles, profesionales) */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* Glow effects (sutiles para hover) */
+  --shadow-glow-primary: 0 0 10px oklch(0.7 0.2 142 / 0.3);
+  --shadow-glow-accent: 0 0 10px oklch(0.6 0.18 230 / 0.3);
+
+  /* ========== ANIMATIONS ========== */
+
+  --animation-duration-instant: 100ms;
+  --animation-duration-fast: 150ms;
+  --animation-duration-normal: 250ms;
+  --animation-duration-slow: 400ms;
+  --animation-easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-easing-in: cubic-bezier(0.4, 0, 1, 1);
+  --animation-easing-out: cubic-bezier(0, 0, 0.2, 1);
 }
 
-/* Base styles */
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-@theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-}
+/* ========== DARK THEME (Default) ========== */
 
 :root {
-  --radius: 0.625rem;
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Mapear tokens a variables semánticas */
+  --background: var(--color-neutral-950);
+  --foreground: var(--color-neutral-50);
+
+  --card: var(--color-neutral-900);
+  --card-foreground: var(--color-neutral-50);
+
+  --popover: var(--color-neutral-900);
+  --popover-foreground: var(--color-neutral-50);
+
+  --primary: var(--color-primary-500);
+  --primary-foreground: var(--color-neutral-50);
+
+  --secondary: var(--color-neutral-800);
+  --secondary-foreground: var(--color-neutral-50);
+
+  --muted: var(--color-neutral-800);
+  --muted-foreground: var(--color-neutral-400);
+
+  --accent: var(--color-accent-500);
+  --accent-foreground: var(--color-neutral-50);
+
+  --destructive: var(--color-error);
+  --destructive-foreground: var(--color-neutral-50);
+
+  --border: var(--color-neutral-800);
+  --input: var(--color-neutral-800);
+  --ring: var(--color-primary-500);
+
+  --radius: 0.5rem;
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+/* ========== LIGHT THEME (Optional) ========== */
+
+.light {
+  --background: var(--color-neutral-50);
+  --foreground: var(--color-neutral-900);
+
+  --card: var(--color-neutral-100);
+  --card-foreground: var(--color-neutral-900);
+
+  --popover: var(--color-neutral-100);
+  --popover-foreground: var(--color-neutral-900);
+
+  --primary: var(--color-primary-600);
+  --primary-foreground: var(--color-neutral-50);
+
+  --secondary: var(--color-neutral-200);
+  --secondary-foreground: var(--color-neutral-900);
+
+  --muted: var(--color-neutral-200);
+  --muted-foreground: var(--color-neutral-600);
+
+  --accent: var(--color-accent-600);
+  --accent-foreground: var(--color-neutral-50);
+
+  --destructive: var(--color-error);
+  --destructive-foreground: var(--color-neutral-50);
+
+  --border: var(--color-neutral-300);
+  --input: var(--color-neutral-300);
+  --ring: var(--color-primary-600);
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+/* ========== BASE STYLES ========== */
+
+* {
+  border-color: var(--border); /* fallback until Tailwind utility available */
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* ========== CUSTOM UTILITIES ========== */
+
+/* Glow effects para gaming aesthetic */
+.glow-primary {
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.glow-accent {
+  box-shadow: var(--shadow-glow-accent);
+}
+
+/* Gradient backgrounds */
+.bg-gradient-gaming {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-900) 0%,
+    var(--color-neutral-950) 50%,
+    var(--color-accent-900) 100%
+  );
+}
+
+/* Smooth transitions */
+.transition-smooth {
+  transition-property: all;
+  transition-duration: var(--animation-duration-normal);
+  transition-timing-function: var(--animation-easing-default);
+}
+
+/* Line clamp utilities (replaces @tailwindcss/line-clamp plugin) */
+.line-clamp-1,
+.line-clamp-2,
+.line-clamp-3,
+.line-clamp-4,
+.line-clamp-5,
+.line-clamp-6 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-1 {
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  -webkit-line-clamp: 3;
+}
+
+.line-clamp-4 {
+  -webkit-line-clamp: 4;
+}
+
+.line-clamp-5 {
+  -webkit-line-clamp: 5;
+}
+
+.line-clamp-6 {
+  -webkit-line-clamp: 6;
 }
